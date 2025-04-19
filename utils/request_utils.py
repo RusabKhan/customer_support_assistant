@@ -53,3 +53,12 @@ def get_current_user(
         return user
     except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+
+
+def get_current_user_with_permissions(required_permissions: list[Role]):
+    def dependency(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)) -> User:
+        user = get_current_user(db, token)
+        if user.role not in required_permissions:
+            raise HTTPException(status_code=403, detail="You don't have permission to access this resource.")
+        return user
+    return dependency
