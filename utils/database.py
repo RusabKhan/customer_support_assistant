@@ -1,3 +1,5 @@
+import os
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.exc import IntegrityError, NoResultFound
@@ -106,3 +108,11 @@ class DB:
 
 def create_db_url(db_name: str, db_user: str, db_password: str, db_host: str, db_port: int) -> str:
     return f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
+
+def get_db() -> Session:
+    """Dependency to get the database session."""
+    db_session = DB(db_url=create_db_url(db_name=os.getenv("DB_NAME"), db_user=os.getenv("DB_USER"), db_password=os.getenv("DB_PASSWORD"), db_host=os.getenv("DB_HOST"), db_port=int(os.getenv("DB_PORT")))).get_session()
+    try:
+        yield db_session
+    finally:
+        db_session.close()

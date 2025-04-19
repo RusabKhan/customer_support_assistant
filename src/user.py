@@ -4,13 +4,12 @@ from sqlalchemy.orm import Session
 from uuid import UUID
 from datetime import datetime, timedelta
 
-from db import DB
-from models import User
-from schemas import SignupRequest, TokenResponse
-from dependencies import get_db, get_current_user
+from utils.database import DB, get_db
+from utils.db_models.main import User
+from models.schemas import SignupRequest, TokenResponse
 
-from models.main import Role
-from utils.token import create_access_token, pwd_context
+from models.schemas import Role
+from utils.security import create_access_token, pwd_context, get_current_user
 
 router = APIRouter()
 

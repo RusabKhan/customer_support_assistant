@@ -1,9 +1,14 @@
+from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 import os
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, Depends
+from sqlalchemy.orm import Session
+
 from models.user_roles import Role, RolePermissions
+from utils import get_db
+from utils.db_models.main import User
 
 # Configurable secret and algorithm
 SECRET_KEY = os.getenv("JWT_SECRET_KEY", "supersecretkey")
@@ -39,3 +44,23 @@ def has_permission(role: Role, action: str):
             status_code=status.HTTP_403_FORBIDDEN,
             detail=f"Role '{role}' does not have permission to perform '{action}'"
         )
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)) -> User:
+    """Dependency to get the current logged-in user from the token."""
+    try:
+        # Decode the JWT token
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get("sub")  # "sub" is the subject of the JWT token (usually user ID)
+
+        if user_id is None:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate credentials")
+
+        user = db.query(User).filter(User.id == user_id).first()  # Fetch user from the DB
+        if user is None:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
+
+        return user
+    except JWTError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
