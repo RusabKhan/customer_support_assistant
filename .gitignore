@@ -1,0 +1,43 @@
+# Python bytecode
+*.pyc
+*.pyo
+*.pyd
+__pycache__
+
+# Poetry virtual environment
+.poetry/
+
+# Python virtual environment
+venv/
+.env/
+.env
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Pytest
+.cache/
+nosetests.xml
+coverage.xml
+*.cover
+
+# pyenv
+.python-version
+
+# mypy
+.mypy_cache/
+
+# Coverage and test result files
+*.coverage
+*.hypothesis/
+
+# Distribution / packaging
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
+*.tar.gz
