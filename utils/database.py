@@ -5,6 +5,7 @@ from typing import List
 from datetime import datetime
 
 from utils.db_models.main import User, Ticket, Message, Token, Base
+from utils.exception_handler import handle_db_error
 
 
 class DB:
@@ -91,7 +92,11 @@ class DB:
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Exit the context manager, handling flush and session closing."""
         if exc_type:
-            self.db_session.rollback()  # Rollback if an error occurs
+            self.db_session.rollback()
+            return handle_db_error(exc_type, exc_val)
         else:
             self.db_session.commit()  # Commit the changes if no error
         self.db_session.close()
+
+def create_db_url(db_name: str, db_user: str, db_password: str, db_host: str, db_port: int) -> str:
+    return f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"

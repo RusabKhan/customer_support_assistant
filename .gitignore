@@ -41,3 +41,5 @@ dist/
 build/
 *.whl
 *.tar.gz
+!/.env
+!/.env
