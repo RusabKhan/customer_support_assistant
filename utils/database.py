@@ -17,7 +17,6 @@ class DB:
         self.db_url = db_url
         self.engine = create_engine(self.db_url, pool_size=10, max_overflow=20)
         self.SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
-        Base.metadata.create_all(bind=self.engine)
 
     def get_session(self) -> Session:
         return self.SessionLocal()
@@ -106,8 +105,8 @@ class DB:
         self.db_session.close()
 
 
-def create_db_url(db_name: str, db_user: str, db_password: str, db_host: str, db_port: int) -> str:
-    return f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
+def create_db_url() -> str:
+    return f"{os.getenv('DB_DIALECT')}://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
 
 def get_db() -> Session:
     """Dependency to get the database session."""
