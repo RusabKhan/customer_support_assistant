@@ -3,7 +3,7 @@ import requests
 from utils.exception_handler import handle_request_error
 
 
-class GroqAPI:
+class GroqAssistant:
     def __init__(self, api_key: str):
         self.api_key = api_key
         self.base_url = "https://api.groq.com/v1/ask"  # Update with Groq's correct endpoint

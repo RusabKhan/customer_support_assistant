@@ -1,0 +1,46 @@
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
+from uuid import UUID
+from datetime import datetime, timedelta
+
+from db import DB
+from models import User
+from schemas import SignupRequest, TokenResponse
+from dependencies import get_db, get_current_user
+
+from models.main import Role
+from utils.token import create_access_token, pwd_context
+
+router = APIRouter()
+
+
+@router.post("/auth/signup", response_model=TokenResponse)
+def signup(request: SignupRequest, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    if current_user.role != Role.admin:
+        raise HTTPException(status_code=403, detail="Only admin can create users")
+    hashed_password = pwd_context.hash(request.password)
+    user = db.create_user(db, email=request.username, hashed_password=hashed_password, role=request.role.value)
+    token = create_access_token(data={"sub": str(user.id)})
+    return TokenResponse(access_token=token, token_type="bearer")
+
+
+@router.post("/auth/login", response_model=TokenResponse)
+def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    user = db.get_user_by_email(db, form_data.username)
+    if not user or not pwd_context.verify(form_data.password, user.hashed_password):
+        raise HTTPException(status_code=401, detail="Incorrect username or password")
+    token = create_access_token(data={"sub": str(user.id)})
+    user.last_login = datetime.utcnow()
+    db.commit()
+    return TokenResponse(access_token=token, token_type="bearer")
+
+@router.delete("/auth/user/{user_id}")
+def delete_user(user_id: UUID, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Only admin can delete users")
+    user = db.get_user(db, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    db.delete_user(db, user_id)
+    return {"detail": "User deleted successfully"}

@@ -2,10 +2,7 @@ from pydantic import BaseModel, Field
 from typing import List, Optional
 import enum
 
-class Role(str, enum.Enum):
-    user = "user"
-    admin = "admin"
-    support = "support"
+from models.user_roles import Role
 
 
 class Token(str, enum.Enum):
