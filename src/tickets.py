@@ -17,7 +17,7 @@ router = APIRouter()
 def list_tickets( current_user: User = Depends(get_current_user_with_permissions([Permission.VIEW_OWN_TICKETS, Permission.VIEW_ALL_TICKETS]))):
     with DB(create_db_url()) as db:
         tickets = db.get_tickets_by_user(db.db_session, current_user.id)
-    return tickets
+        return [TicketResponse(id=ticket.id, title=ticket.title, content=ticket.description, status=ticket.status) for ticket in tickets]
 
 
 @router.post("/tickets", response_model=TicketResponse)
@@ -27,14 +27,31 @@ def create_ticket(request: TicketCreate, current_user: User = Depends(get_curren
         return TicketResponse(id=ticket.id, title=ticket.title, content=ticket.description, status=ticket.status)
 
 
+@router.get("/tickets/all", response_model=List[TicketWithMessages])
+def get_all_tickets(current_user: User = Depends(get_current_user_with_permissions([Permission.VIEW_ALL_TICKETS]))):
+    with DB(create_db_url()) as db:
+        tickets = db.get_all_tickets(db.db_session)
+        return [
+            TicketWithMessages(
+                id=ticket.id,
+                title=ticket.title,
+                content=ticket.description,
+                messages=ticket.messages
+            ) for ticket in tickets
+        ]
+
 @router.get("/tickets/{ticket_id}", response_model=TicketWithMessages)
 def get_ticket(ticket_id: UUID, current_user: User = Depends(get_current_user_with_permissions([Permission.VIEW_ALL_TICKETS]))):
     with DB(create_db_url()) as db:
         ticket = db.get_ticket_with_messages(db.db_session, ticket_id)
         if not ticket:
             raise HTTPException(status_code=404, detail="Ticket not found")
-        return TicketWithMessages(id=ticket.id, title=ticket.title, content=ticket.description, messages=ticket.messages)
-
+        return TicketWithMessages(
+            id=ticket.id,
+            title=ticket.title,
+            content=ticket.description,
+            messages=ticket.messages
+        )
 
 @router.post("/tickets/{ticket_id}/messages", response_model=MessageCreate)
 def add_message(ticket_id: UUID, request: MessageCreate, current_user: User = Depends(get_current_user_with_permissions([Permission.VIEW_ALL_TICKETS]))):
@@ -44,7 +61,7 @@ def add_message(ticket_id: UUID, request: MessageCreate, current_user: User = De
         if not ticket:
             raise HTTPException(status_code=404, detail="Ticket not found")
         message = db.create_message(db.db_session, ticket_id, request.content)
-    return message
+        return MessageCreate(content=message.content, is_ai=message.is_ai)
 
 
 @router.get("/tickets/{ticket_id}/ai-response")

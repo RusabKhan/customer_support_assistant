@@ -60,7 +60,7 @@ def get_current_user_with_permissions(required_permissions: list[Permission]):
         user = get_current_user(db, token)
         user_permissions = RolePermissions.get(user.role, set())
 
-        if not set(required_permissions).issubset(user_permissions):
+        if not set(required_permissions).intersection(user_permissions):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="You don't have permission to access this resource."

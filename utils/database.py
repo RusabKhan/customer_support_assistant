@@ -98,6 +98,9 @@ class DB:
             ticket.messages = self.get_messages_by_ticket(db, ticket_id)
         return ticket
 
+    def get_ticket(self, db: Session, ticket_id: UUID) -> Optional[Ticket]:
+        return db.query(Ticket).filter(Ticket.id == ticket_id).first()
+
     def __enter__(self):
         self.db_session = self.get_session()
         return self
