@@ -43,3 +43,5 @@ build/
 *.tar.gz
 !/.env
 !/.env
+
+.qodo

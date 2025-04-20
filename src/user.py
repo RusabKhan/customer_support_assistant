@@ -17,6 +17,17 @@ async def signup(
     request: SignupRequest,
     current_user: User = Depends(get_current_user_with_permissions([Role.admin]))
 ):
+    """
+Registers a new user account.
+Accessible only to admin users.
+
+Args:
+    request (SignupRequest): User signup details.
+    current_user (User): The authenticated admin user (injected by dependency).
+
+Returns:
+    SignupResponse: Details of the newly created user.
+"""
     with DB(create_db_url()) as db:
         user = db.create_user(db.db_session,email=request.email, password=request.password, role=request.role)
         return SignupResponse(
@@ -27,6 +38,20 @@ async def signup(
 
 @router.post("/auth/login", response_model=TokenResponse)
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    """
+Authenticate a user and issue a bearer token.
+
+Validates user credentials from the login form, and returns an access token with expiration details if authentication succeeds.
+
+Args:
+    form_data (OAuth2PasswordRequestForm): Login form data containing username and password.
+
+Returns:
+    TokenResponse: Access token and related metadata.
+
+Raises:
+    HTTPException: If authentication fails due to incorrect credentials.
+"""
     with DB(create_db_url()) as db:
         user = db.get_user_by_email_and_password(db.db_session, form_data.username, form_data.password)
         if not user:
@@ -54,6 +79,16 @@ async def delete_user(
     user_id: UUID,
     current_user: User = Depends(get_current_user_with_permissions([Role.admin]))
 ):
+    """
+Delete a user by user ID. Requires admin permissions.
+
+Args:
+    user_id (UUID): Unique identifier of the user to delete.
+    current_user (User): The currently authenticated admin user.
+
+Returns:
+    dict: Confirmation message upon successful deletion.
+"""
     with DB(create_db_url()) as db:
         db.delete_user(db.db_session, user_id)
     return {"detail": "User deleted successfully"}
@@ -61,6 +96,18 @@ async def delete_user(
 
 @router.get("/auth/user/{user_id}")
 async def get_user(user_id: UUID, current_user: User = Depends(get_current_user_with_permissions([Role.admin]))):
+    """
+Retrieve a user by their unique ID.
+
+Requires admin permissions.
+
+Args:
+    user_id (UUID): Unique identifier of the user.
+    current_user (User): The currently authenticated admin user (injected by dependency).
+
+Returns:
+    User: The user object corresponding to the given ID.
+"""
     with DB(create_db_url()) as db:
         user = db.get_user_by_id(db.db_session, user_id)
     return user
@@ -68,6 +115,15 @@ async def get_user(user_id: UUID, current_user: User = Depends(get_current_user_
 
 @router.get("/auth/users")
 async def get_users(current_user: User = Depends(get_current_user_with_permissions([Role.admin]))):
+    """
+Retrieve a list of all users. Accessible only to users with the admin role.
+
+Args:
+    current_user (User): The currently authenticated admin user (injected by dependency).
+
+Returns:
+    List[User]: A list of all user objects.
+"""
     with DB(create_db_url()) as db:
         users = db.get_all_users(db.db_session)
     return users
