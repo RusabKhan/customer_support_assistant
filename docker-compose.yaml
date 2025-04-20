@@ -12,4 +12,21 @@ services:
       - .:/app
     env_file:
       - .env
+    depends_on:
+      - db
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  db:
+    image: postgres:15
+    container_name: postgres-db
+    ports:
+      - "5433:5432"  # host:container
+    environment:
+      POSTGRES_USER: rusab1
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: demo
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
