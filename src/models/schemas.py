@@ -1,5 +1,9 @@
-from pydantic import BaseModel, Field
+from datetime import datetime
+from uuid import UUID
+
+from pydantic import BaseModel, Field, EmailStr, field_validator
 from typing import List, Optional
+import re
 import enum
 
 from models.user_roles import Role
@@ -12,14 +16,37 @@ class Token(str, enum.Enum):
 
 
 class SignupRequest(BaseModel):
-    username: str
+    email: EmailStr
     password: str
     role: Role
 
+    @field_validator("password")
+    def validate_password(cls, value):
+        if len(value) < 6:
+            raise ValueError("Password must be at least 6 characters long")
+        if not re.search(r"\d", value):
+            raise ValueError("Password must contain at least one number")
+        return value
+
+class SignupResponse(BaseModel):
+    email: str
+    role: Role
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
 
 class TokenResponse(BaseModel):
-    access_token: str
-    token_type: Token.bearer
+    id: UUID
+    user_id: UUID
+    token: str
+    expires_at: datetime
+    created_at: datetime
+    revoked_at: Optional[datetime] = None
+    token_type: str = "bearer"
+
+    class Config:
+        orm_mode = True
 
 
 class TicketCreate(BaseModel):

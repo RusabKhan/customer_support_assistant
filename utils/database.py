@@ -94,7 +94,7 @@ class DB:
 
     def __enter__(self):
         self.db_session = self.get_session()
-        return self.db_session
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if exc_type:
