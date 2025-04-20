@@ -2,11 +2,19 @@ from enum import Enum
 
 
 class Role(str, Enum):
+    """
+Enumeration of user roles within the system.
+
+Defines possible roles: user, admin, and support.
+"""
     user = "user"
     admin = "admin"
     support = "support"
 
 class TicketStatus(str, Enum):
+    """
+Enumeration of possible statuses for a ticket, including open, closed, in progress, on hold, and resolved.
+"""
     open = "open"
     closed = "closed"
     in_progress = "in_progress"
@@ -14,6 +22,9 @@ class TicketStatus(str, Enum):
     resolved = "resolved"
 
 class Permission(str, Enum):
+    """
+Enumeration of user permissions for authentication and ticket management actions.
+"""
     CREATE_USER = "create_user"
     LOGIN = "login"
     VIEW_ALL_TICKETS = "view_all_tickets"

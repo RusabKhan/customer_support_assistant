@@ -6,7 +6,7 @@ from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 from starlette import status
 
-from models.enums import Role, RolePermissions, Permission
+from src.models.enums import Role, RolePermissions, Permission
 from utils import get_db
 from utils.db_models.main import User
 from utils.security import SECRET_KEY, ALGORITHM

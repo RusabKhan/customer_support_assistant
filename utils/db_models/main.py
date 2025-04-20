@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
 
-from models.enums import Role, TicketStatus
+from src.models.enums import Role, TicketStatus
 
 Base = declarative_base()
 
@@ -63,3 +63,14 @@ class Message(Base):
 
     ticket_id = Column(UUID(as_uuid=True), ForeignKey("tickets.id"), nullable=False)
     ticket = relationship("Ticket", back_populates="messages")
+
+
+class GroqChat(Base):
+    __tablename__ = "groq_chat"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    message = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="groq_chat")
