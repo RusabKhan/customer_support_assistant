@@ -134,3 +134,15 @@ Attributes:
 """
     content: str
     is_ai: bool
+
+class GroqResponse(BaseModel):
+    """
+Represents a response from the Groq API, including a list of generated responses.
+
+Attributes:
+    responses (List[str]): List of generated responses from the Groq API.
+"""
+    responses: List[str]
+
+class GroqFollowupInput(BaseModel):
+    user_reply: str

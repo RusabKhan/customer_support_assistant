@@ -3,10 +3,12 @@ from src.user import  router as user_router
 from utils.db_models.main import Base
 from utils.database import create_db_url, DB
 from src.tickets import router as ticket_router
+from src.groq_assistant import router as groq_router
 
 app = FastAPI()
 app.include_router(router=user_router)
 app.include_router(router=ticket_router)
+app.include_router(router=groq_router)
 
 
 if __name__ == "__main__":

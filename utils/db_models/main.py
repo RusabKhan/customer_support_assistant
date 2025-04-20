@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import Column, String, DateTime, ForeignKey, Boolean, Enum
+from sqlalchemy import Column, String, DateTime, ForeignKey, Boolean, Enum, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -23,7 +23,6 @@ class User(Base):
     last_login = Column(DateTime, nullable=True)
     tokens = relationship("Token", back_populates="user", cascade="all, delete-orphan")
     tickets = relationship("Ticket", back_populates="user")
-
 
 class Token(Base):
     __tablename__ = "tokens"
@@ -63,14 +62,3 @@ class Message(Base):
 
     ticket_id = Column(UUID(as_uuid=True), ForeignKey("tickets.id"), nullable=False)
     ticket = relationship("Ticket", back_populates="messages")
-
-
-class GroqChat(Base):
-    __tablename__ = "groq_chat"
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
-    message = Column(String, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-
-    user = relationship("User", back_populates="groq_chat")

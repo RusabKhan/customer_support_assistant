@@ -49,9 +49,29 @@ Returns:
         return new_user
 
     def get_user_by_id(self, db: Session, user_id: UUID) -> Optional[User]:
+        """
+Retrieve a user by their unique ID.
+
+Args:
+    db (Session): SQLAlchemy database session.
+    user_id (UUID): Unique identifier of the user.
+
+Returns:
+    Optional[User]: The User object if found, otherwise None.
+"""
         return db.query(User).filter(User.id == user_id).first()
 
     def get_user_by_email(self, db: Session, email: str) -> Optional[User]:
+        """
+Retrieve a user by their email address.
+
+Args:
+    db (Session): SQLAlchemy database session.
+    email (str): User's email address.
+
+Returns:
+    Optional[User]: The User object if found, otherwise None.
+"""
         return db.query(User).filter(User.email == email).first()
 
     def get_user_by_email_and_password(self, db: Session, email: str, password: str) -> Optional[User]:
@@ -108,11 +128,36 @@ Returns:
         db.refresh(new_ticket)
         return new_ticket
 
-    def get_tickets_by_user(self, db: Session, user_id: UUID) -> List[Ticket]:
-        return db.query(Ticket).filter(Ticket.user_id == user_id).all()
+    def get_tickets_by_user(self, db: Session, user_id: UUID, page: int = 1, page_size: int = 10) -> List[Ticket]:
+        """
+Retrieve a paginated list of tickets for a specific user.
 
-    def get_all_tickets(self, db: Session) -> List[Ticket]:
-        return db.query(Ticket).all()
+Args:
+    db (Session): SQLAlchemy database session.
+    user_id (UUID): Unique identifier of the user.
+    page (int, optional): Page number for pagination. Defaults to 1.
+    page_size (int, optional): Number of tickets per page. Defaults to 10.
+
+Returns:
+    List[Ticket]: A list of Ticket objects associated with the user.
+"""
+        offset = (page - 1) * page_size
+        return db.query(Ticket).filter(Ticket.user_id == user_id).offset(offset).limit(page_size).all()
+
+    def get_all_tickets(self, db: Session, page: int = 1, page_size: int = 10) -> List[Ticket]:
+        """
+Retrieve a paginated list of all tickets.
+
+Args:
+    db (Session): SQLAlchemy database session.
+    page (int, optional): Page number for pagination. Defaults to 1.
+    page_size (int, optional): Number of tickets per page. Defaults to 10.
+
+Returns:
+    List[Ticket]: A list of Ticket objects for the specified page.
+"""
+        offset = (page - 1) * page_size
+        return db.query(Ticket).offset(offset).limit(page_size).all()
 
     def create_message(self, db: Session, ticket_id: UUID, content: str, is_ai: bool = False) -> Message:
         """
@@ -133,8 +178,21 @@ Returns:
         db.refresh(new_message)
         return new_message
 
-    def get_messages_by_ticket(self, db: Session, ticket_id: UUID) -> List[Message]:
-        return db.query(Message).filter(Message.ticket_id == ticket_id).all()
+    def get_messages_by_ticket(self, db: Session, ticket_id: UUID, page: int = 1, page_size: int = 10) -> List[Message]:
+        """
+Retrieve a paginated list of messages for a specific ticket.
+
+Args:
+    db (Session): SQLAlchemy database session.
+    ticket_id (UUID): Unique identifier of the ticket.
+    page (int, optional): Page number for pagination. Defaults to 1.
+    page_size (int, optional): Number of messages per page. Defaults to 10.
+
+Returns:
+    List[Message]: A list of Message objects associated with the ticket.
+"""
+        offset = (page - 1) * page_size
+        return db.query(Message).filter(Message.ticket_id == ticket_id).offset(offset).limit(page_size).all()
 
     def create_token_for_user(self, db: Session, user_id: UUID, expires_delta: timedelta = timedelta(hours=1)) -> Token:
         """
@@ -156,8 +214,22 @@ Returns:
         db.refresh(new_token)
         return new_token
 
-    def get_tokens_by_user(self, db: Session, user_id: UUID) -> List[Token]:
-        return db.query(Token).filter(Token.user_id == user_id).all()
+    def get_tokens_by_user(self, db: Session, user_id: UUID, page: int = 1, page_size: int = 10) -> List[Token]:
+
+        """
+Retrieve a list of tokens associated with a user, paginated by page and page_size.
+
+Args:
+    db (Session): SQLAlchemy database session.
+    user_id (UUID): Unique identifier of the user.
+    page (int, optional): Page number of the results. Defaults to 1.
+    page_size (int, optional): Number of results per page. Defaults to 10.
+
+Returns:
+    List[Token]: A list of Token objects associated with the user.
+"""
+        offset = (page - 1) * page_size
+        return db.query(Token).filter(Token.user_id == user_id).offset(offset).limit(page_size).all()
 
     def revoke_token(self, db: Session, token_id: UUID):
         """
@@ -173,24 +245,56 @@ Args:
             db.commit()
             db.refresh(token)
 
-    def get_ticket_with_messages(self, db: Session, ticket_id: UUID) -> Optional[Ticket]:
+    def get_ticket_with_messages(self, db: Session, ticket_id: UUID, page: int = 1, page_size: int = 10) -> Optional[
+        Ticket]:
         """
-Retrieve a ticket by its ID and populate its messages attribute with all related messages.
+Retrieve a ticket by its ID and attach a paginated list of its messages.
+
+Args:
+    db (Session): SQLAlchemy database session.
+    ticket_id (UUID): Unique identifier of the ticket.
+    page (int, optional): Page number for message pagination. Defaults to 1.
+    page_size (int, optional): Number of messages per page. Defaults to 10.
+
+Returns:
+    Optional[Ticket]: The Ticket object with its messages if found, otherwise None.
+"""
+        ticket = db.query(Ticket).filter(Ticket.id == ticket_id).first()
+        if ticket:
+            ticket.messages = self.get_messages_by_ticket(db, ticket_id, page, page_size)
+        return ticket
+
+    def get_ticket(self, db: Session, ticket_id: UUID) -> Optional[Ticket]:
+        """
+Retrieve a ticket by its unique ID.
 
 Args:
     db (Session): SQLAlchemy database session.
     ticket_id (UUID): Unique identifier of the ticket.
 
 Returns:
-    Optional[Ticket]: The Ticket object with its messages loaded, or None if not found.
+    Optional[Ticket]: The Ticket object if found, otherwise None.
 """
-        ticket = db.query(Ticket).filter(Ticket.id == ticket_id).first()
-        if ticket:
-            ticket.messages = self.get_messages_by_ticket(db, ticket_id)
-        return ticket
-
-    def get_ticket(self, db: Session, ticket_id: UUID) -> Optional[Ticket]:
         return db.query(Ticket).filter(Ticket.id == ticket_id).first()
+
+    def get_groq_chats_by_ticket_id(
+            self,
+            db: Session,
+            ticket_id: UUID,
+            page: int = 1,
+            page_size: int = 10
+    ) -> List[Message]:
+        offset = (page - 1) * page_size
+        return (
+            db.query(Message)
+            .filter(Message.ticket_id == ticket_id)
+            .filter(Message.is_ai == True)
+            .offset(offset)
+            .limit(page_size)
+            .all()
+        )
+
+
 
     def __enter__(self):
         self.db_session = self.get_session()

@@ -25,7 +25,7 @@ def handle_db_error(exc_type, exc_val):
         raise HTTPException(status_code=404, detail="Resource not found.")
 
     elif isinstance(exc_val, SQLAlchemyError):
-        raise HTTPException(status_code=500, detail="Internal server error with the database.")
+        raise HTTPException(status_code=500, detail=f"Internal server error with the database. {exc_val}")
 
     else:
         raise HTTPException(status_code=int(exc_val.status_code), detail=str(exc_val))

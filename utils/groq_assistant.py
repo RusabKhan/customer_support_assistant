@@ -1,7 +1,8 @@
 import os
-from groq import Groq
-from utils.exception_handler import handle_request_error
+from pyexpat.errors import messages
 
+from utils.exception_handler import handle_request_error
+from groq import Groq
 
 class GroqAssistant:
     """
@@ -59,3 +60,20 @@ Raises:
             return chat_completion.choices[0].message.content
         except Exception as err:
             return handle_request_error(type(err), err)
+
+    def generate_response_from_history(self, message_history: list[str]) -> str:
+        # Pseudo-call to Groq
+        # Build a prompt or conversation object depending on their API
+        prompt = "\n".join(message_history)
+        messages = []
+        messages.append({
+            "role": "user",
+            "content": f"Customer's latest message: {prompt}"
+        })
+
+        response = self.client.chat.completions.create(
+            messages=messages,
+            model="llama3-70b-8192",
+            stream=False
+            )  # implement _call_groq() internally
+        return response.choices[0].message.content
