@@ -1,0 +1,414 @@
+{
+	"info": {
+		"_postman_id": "febd94ef-5b31-4555-b226-823d1c28a15b",
+		"name": "Customer Support",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13271488",
+		"_collection_link": "https://red-station-167866.postman.co/workspace/Apolloh_workspace~a2e737fa-99ad-4393-a12f-70309af31964/collection/13271488-febd94ef-5b31-4555-b226-823d1c28a15b?action=share&source=collection_link&creator=13271488"
+	},
+	"item": [
+		{
+			"name": "Sign Up",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3YjY2MGI4MS00ODdhLTQzZmQtYjFmNi1lYTc0ZmI3ODhiMjEiLCJleHAiOjE3NDUxMTY4NDh9.T7u6AJ_4dR7gA8gEkfrOHPeACme2hmASN7-f04T3cxY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\":\"admin112g@user.com\",\n    \"password\":\"123abc\",\n    \"role\":\"support\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/auth/signup",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"auth",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "abc@example.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/auth/login",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Tickets",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3YjY2MGI4MS00ODdhLTQzZmQtYjFmNi1lYTc0ZmI3ODhiMjEiLCJleHAiOjE3NDUxNjc0OTV9.tFrfdaathItDscDHuvxrvl1gpPXXxxaA8FvhOoLjqBQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\":\"AWS Lambda issues\",\n    \"content\":\"My lambda function does not work properly\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/tickets",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"tickets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Ticket Message",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3YjY2MGI4MS00ODdhLTQzZmQtYjFmNi1lYTc0ZmI3ODhiMjEiLCJleHAiOjE3NDUxNTEzMTZ9.a1clgdWUsNGhmFN2xJ67VMJztnFBtKB9tVuvVVdutlk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"content\":\"LOREM IPSUM DOLOR SEIT\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/tickets/b928594d-800c-45f3-9912-3ca90f07a58a/messages",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"tickets",
+						"b928594d-800c-45f3-9912-3ca90f07a58a",
+						"messages"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get My Tickets",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3YjY2MGI4MS00ODdhLTQzZmQtYjFmNi1lYTc0ZmI3ODhiMjEiLCJleHAiOjE3NDUxMTkxMzZ9.AXV09-SoDeXaFDLsd5yPGkXuTwCx7_zHGJqAwveGGbc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\":\"TEST\",\n    \"content\":\"LOREM IPSUM DOLOR SEIT\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/tickets",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"tickets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Tickets",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3YjY2MGI4MS00ODdhLTQzZmQtYjFmNi1lYTc0ZmI3ODhiMjEiLCJleHAiOjE3NDUxMTkxMzZ9.AXV09-SoDeXaFDLsd5yPGkXuTwCx7_zHGJqAwveGGbc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/tickets/all",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"tickets",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Ticket By ID",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3YjY2MGI4MS00ODdhLTQzZmQtYjFmNi1lYTc0ZmI3ODhiMjEiLCJleHAiOjE3NDUxMTkxMzZ9.AXV09-SoDeXaFDLsd5yPGkXuTwCx7_zHGJqAwveGGbc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\":\"TEST\",\n    \"content\":\"LOREM IPSUM DOLOR SEIT\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/tickets/b928594d-800c-45f3-9912-3ca90f07a58a",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"tickets",
+						"b928594d-800c-45f3-9912-3ca90f07a58a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Ticket Process By GROQ",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3YjY2MGI4MS00ODdhLTQzZmQtYjFmNi1lYTc0ZmI3ODhiMjEiLCJleHAiOjE3NDUxNjc0OTV9.tFrfdaathItDscDHuvxrvl1gpPXXxxaA8FvhOoLjqBQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\":\"TEST\",\n    \"content\":\"LOREM IPSUM DOLOR SEIT\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/groq/b348c60d-59ef-47f3-a6fa-0d16fa947676/ai-response",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"groq",
+						"b348c60d-59ef-47f3-a6fa-0d16fa947676",
+						"ai-response"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Ticket Process By GROQ Copy",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3YjY2MGI4MS00ODdhLTQzZmQtYjFmNi1lYTc0ZmI3ODhiMjEiLCJleHAiOjE3NDUxNjc0OTV9.tFrfdaathItDscDHuvxrvl1gpPXXxxaA8FvhOoLjqBQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\":\"TEST\",\n    \"content\":\"LOREM IPSUM DOLOR SEIT\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/groq/b348c60d-59ef-47f3-a6fa-0d16fa947676/ai-followup",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"groq",
+						"b348c60d-59ef-47f3-a6fa-0d16fa947676",
+						"ai-followup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Ticket Process By GROQ Copy",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3YjY2MGI4MS00ODdhLTQzZmQtYjFmNi1lYTc0ZmI3ODhiMjEiLCJleHAiOjE3NDUxNjc0OTV9.tFrfdaathItDscDHuvxrvl1gpPXXxxaA8FvhOoLjqBQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\":\"TEST\",\n    \"content\":\"LOREM IPSUM DOLOR SEIT\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/groq/groq-response/b348c60d-59ef-47f3-a6fa-0d16fa947676",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"groq",
+						"groq-response",
+						"b348c60d-59ef-47f3-a6fa-0d16fa947676"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "http://0.0.0.0:8000",
+			"type": "string"
+		}
+	]
+}
