@@ -2,10 +2,11 @@ from fastapi import FastAPI
 from src.user import  router as user_router
 from utils.db_models.main import Base
 from utils.database import create_db_url, DB
-import os
+from src.tickets import router as ticket_router
 
 app = FastAPI()
 app.include_router(router=user_router)
+app.include_router(router=ticket_router)
 
 
 if __name__ == "__main__":

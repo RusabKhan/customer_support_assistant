@@ -8,7 +8,7 @@ from utils.database import DB, create_db_url
 from utils.db_models.main import User
 from models.schemas import SignupRequest, TokenResponse, SignupResponse
 from utils.request_utils import get_db, get_current_user_with_permissions, get_current_user
-from models.user_roles import Role
+from models.enums import Role
 
 router = APIRouter()
 

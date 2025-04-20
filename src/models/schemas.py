@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime
 from uuid import UUID
 
@@ -6,7 +7,7 @@ from typing import List, Optional
 import re
 import enum
 
-from models.user_roles import Role
+from models.enums import Role, TicketStatus
 
 
 class Token(str, enum.Enum):
@@ -55,13 +56,14 @@ class TicketCreate(BaseModel):
 
 
 class TicketResponse(BaseModel):
-    id: int
+    id: uuid.UUID
     title: str
     content: str
+    status: TicketStatus
 
 
 class TicketWithMessages(BaseModel):
-    id: int
+    id: uuid.UUID
     title: str
     content: str
     messages: List[str]

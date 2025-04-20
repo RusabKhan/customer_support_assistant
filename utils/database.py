@@ -92,6 +92,12 @@ class DB:
             db.commit()
             db.refresh(token)
 
+    def get_ticket_with_messages(self, db: Session, ticket_id: UUID) -> Optional[Ticket]:
+        ticket = db.query(Ticket).filter(Ticket.id == ticket_id).first()
+        if ticket:
+            ticket.messages = self.get_messages_by_ticket(db, ticket_id)
+        return ticket
+
     def __enter__(self):
         self.db_session = self.get_session()
         return self

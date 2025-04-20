@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
 
-from models.user_roles import Role
+from models.enums import Role, TicketStatus
 
 Base = declarative_base()
 
@@ -44,7 +44,7 @@ class Ticket(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     title = Column(String, nullable=False)
     description = Column(String, nullable=False)
-    status = Column(String, default="open")
+    status = Column(Enum(TicketStatus), default="open")
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

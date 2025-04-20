@@ -28,7 +28,7 @@ def handle_db_error(exc_type, exc_val):
         raise HTTPException(status_code=500, detail="Internal server error with the database.")
 
     else:
-        raise HTTPException(status_code=500, detail="Unknown database error.")
+        raise HTTPException(status_code=int(exc_val.status_code), detail=str(exc_val))
 
 
 def handle_request_error(exc_type, exc_val):
