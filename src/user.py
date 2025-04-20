@@ -13,7 +13,7 @@ from models.enums import Role
 router = APIRouter()
 
 @router.post("/auth/signup", response_model=SignupResponse)
-def signup(
+async def signup(
     request: SignupRequest,
     current_user: User = Depends(get_current_user_with_permissions([Role.admin]))
 ):
@@ -26,7 +26,7 @@ def signup(
 
 
 @router.post("/auth/login", response_model=TokenResponse)
-def login(form_data: OAuth2PasswordRequestForm = Depends()):
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     with DB(create_db_url()) as db:
         user = db.get_user_by_email_and_password(db.db_session, form_data.username, form_data.password)
         if not user:
@@ -50,7 +50,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
 
 
 @router.delete("/auth/user/{user_id}")
-def delete_user(
+async def delete_user(
     user_id: UUID,
     current_user: User = Depends(get_current_user_with_permissions([Role.admin]))
 ):
@@ -60,14 +60,14 @@ def delete_user(
 
 
 @router.get("/auth/user/{user_id}")
-def get_user(user_id: UUID, current_user: User = Depends(get_current_user_with_permissions([Role.admin]))):
+async def get_user(user_id: UUID, current_user: User = Depends(get_current_user_with_permissions([Role.admin]))):
     with DB(create_db_url()) as db:
         user = db.get_user_by_id(db.db_session, user_id)
     return user
 
 
 @router.get("/auth/users")
-def get_users(current_user: User = Depends(get_current_user_with_permissions([Role.admin]))):
+async def get_users(current_user: User = Depends(get_current_user_with_permissions([Role.admin]))):
     with DB(create_db_url()) as db:
         users = db.get_all_users(db.db_session)
     return users

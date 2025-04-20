@@ -1,41 +1,42 @@
-import requests
-
+import os
+from groq import Groq
 from utils.exception_handler import handle_request_error
 
 
 class GroqAssistant:
     def __init__(self, api_key: str):
-        self.api_key = api_key
-        self.base_url = "https://api.groq.com/v1/ask"  # Update with Groq's correct endpoint
+        self.client = Groq(api_key=api_key)
 
-    def generate_response(self, ticket_description: str, message_history: list, latest_message: str) -> str:
-        # Construct the prompt template
-        prompt = f"""
-        You are a helpful customer support assistant. 
-        The customer has the following issue: {ticket_description}
+    def generate_response(self, ticket_description: str, message_history: list[str], latest_message: str) -> str:
+        messages = []
 
-        Previous messages:
-        {message_history}
+        messages.append({
+            "role": "system",
+            "content": "You are a helpful customer support assistant.",
+        })
 
-        Customer's latest message: {latest_message}
+        messages.append({
+            "role": "user",
+            "content": f"The customer has the following issue: {ticket_description}"
+        })
 
-        Provide a helpful response that addresses their concern:
-        """
+        for msg in message_history:
+            messages.append({
+                "role": "user",
+                "content": msg
+            })
 
-        headers = {
-            "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json"
-        }
-
-        payload = {
-            "prompt": prompt,
-            "max_tokens": 150  # Control the response length
-        }
+        messages.append({
+            "role": "user",
+            "content": f"Customer's latest message: {latest_message}"
+        })
 
         try:
-            response = requests.post(self.base_url, json=payload, headers=headers)
-            response.raise_for_status()
-            data = response.json()
-            return data.get("response", "No response generated.")
+            chat_completion = self.client.chat.completions.create(
+                messages=messages,
+                model="llama3-70b-8192",
+                stream=False
+            )
+            return chat_completion.choices[0].message.content
         except Exception as err:
             return handle_request_error(type(err), err)

@@ -71,3 +71,4 @@ class TicketWithMessages(BaseModel):
 
 class MessageCreate(BaseModel):
     content: str
+    is_ai: bool
